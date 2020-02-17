@@ -18,6 +18,8 @@ type
     btnSave: TButton;
     btnCancel: TButton;
     btnColCreate: TButton;
+    sbCols: TScrollBar;
+    pCols: TPanel;
     procedure updateColsPositions();
     procedure changeColsPos(Sender: TObject; Step: Integer);
     procedure btnCancelClick(Sender: TObject);
@@ -26,6 +28,7 @@ type
     procedure btnColUpClick(Sender: TObject);
     procedure btnColDownClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure sbColsChange(Sender: TObject);
   private
     { Private declarations }
     colsList: TList;
@@ -55,11 +58,14 @@ var
   j, childCount: Integer;
 
 begin
-  colCount := colsList.Count - 1;
+  colCount := colsList.Count;
+  sbCols.Max := panelHeight * colCount - pCols.Height;
+
+  dec(colCount);
   for i:= 0 to colCount do
   begin
     p := colsList.Items[i];
-    p.Position.Y := i * panelHeight;
+    p.Position.Y := i * panelHeight - sbCols.Value;
 
     childCount := p.ChildrenCount - 1;
     for j:= 0 to childCount do
@@ -95,6 +101,12 @@ end;
 procedure TfrmSettings.FormCreate(Sender: TObject);
 begin
   colsList := TList.Create;
+  sbCols.SmallChange := panelHeight;
+end;
+
+procedure TfrmSettings.sbColsChange(Sender: TObject);
+begin
+  updateColsPositions();
 end;
 
 procedure TfrmSettings.btnCancelClick(Sender: TObject);
@@ -126,7 +138,7 @@ begin
   p := TPanel.Create(self);
   p.Align := TAlignLayout.Horizontal;
   p.Visible := true;
-  p.Parent := tiColumns;
+  p.Parent := pCols;
   p.Height := panelHeight;
 
   createButton('Delete', btnColDeleteClick);

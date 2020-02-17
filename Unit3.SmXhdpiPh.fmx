@@ -21,6 +21,14 @@ inherited frmSettings_SmXhdpiPh: TfrmSettings_SmXhdpiPh
         Position.Y = 223.000000000000000000
         Size.Width = 250.000000000000000000
       end
+      inherited pCols: TPanel
+        Size.Width = 232.000000000000000000
+        Size.Height = 223.000000000000000000
+      end
+      inherited sbCols: TScrollBar
+        Position.X = 232.000000000000000000
+        Size.Height = 223.000000000000000000
+      end
     end
     inherited tiRows: TTabItem
       Size.Width = 125.000000000000000000

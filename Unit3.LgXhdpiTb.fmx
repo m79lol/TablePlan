@@ -1,39 +1,47 @@
 inherited frmSettings_LgXhdpiTb: TfrmSettings_LgXhdpiTb
-  ClientHeight = 455
-  ClientWidth = 854
+  ClientHeight = 829
+  ClientWidth = 480
   DesignerMasterStyle = 0
   inherited TabControl1: TTabControl
     Anchors = [akLeft, akTop, akRight]
-    Size.Width = 854.000000000000000000
-    Size.Height = 382.000000000000000000
+    Size.Width = 480.000000000000000000
+    Size.Height = 756.000000000000000000
     TabHeight = 49.000000000000000000
     Sizes = (
-      854s
-      333s
-      854s
-      333s)
+      480s
+      707s
+      480s
+      707s)
     inherited tiColumns: TTabItem
-      Size.Width = 427.000000000000000000
+      Size.Width = 240.000000000000000000
       Size.Height = 49.000000000000000000
       ExplicitSize.cx = 69.000000000000000000
       ExplicitSize.cy = 26.000000000000000000
       inherited btnColCreate: TButton
-        Position.Y = 303.000000000000000000
-        Size.Width = 854.000000000000000000
+        Position.Y = 677.000000000000000000
+        Size.Width = 480.000000000000000000
+      end
+      inherited pCols: TPanel
+        Size.Width = 462.000000000000000000
+        Size.Height = 677.000000000000000000
+      end
+      inherited sbCols: TScrollBar
+        Position.X = 462.000000000000000000
+        Size.Height = 677.000000000000000000
       end
     end
     inherited tiRows: TTabItem
-      Size.Width = 427.000000000000000000
+      Size.Width = 240.000000000000000000
       Size.Height = 49.000000000000000000
       ExplicitSize.cx = 69.000000000000000000
       ExplicitSize.cy = 26.000000000000000000
     end
   end
   inherited Panel1: TPanel
-    Position.Y = 382.000000000000000000
-    Size.Width = 854.000000000000000000
+    Position.Y = 756.000000000000000000
+    Size.Width = 480.000000000000000000
     inherited btnCancel: TButton
-      Position.X = 754.000000000000000000
+      Position.X = 380.000000000000000000
     end
   end
 end

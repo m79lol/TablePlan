@@ -21,6 +21,14 @@ inherited frmSettings_LgXhdpiPh: TfrmSettings_LgXhdpiPh
         Position.Y = 543.000000000000000000
         Size.Width = 450.000000000000000000
       end
+      inherited pCols: TPanel
+        Size.Width = 432.000000000000000000
+        Size.Height = 543.000000000000000000
+      end
+      inherited sbCols: TScrollBar
+        Position.X = 432.000000000000000000
+        Size.Height = 543.000000000000000000
+      end
     end
     inherited tiRows: TTabItem
       Size.Width = 225.000000000000000000
