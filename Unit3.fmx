@@ -1,0 +1,90 @@
+object frmSettings: TfrmSettings
+  Left = 0
+  Top = 0
+  Caption = 'Settings'
+  ClientHeight = 613
+  ClientWidth = 746
+  FormFactor.Width = 320
+  FormFactor.Height = 480
+  FormFactor.Devices = [Desktop]
+  OnCreate = FormCreate
+  DesignerMasterStyle = 0
+  object TabControl1: TTabControl
+    Align = Client
+    Size.Width = 746.000000000000000000
+    Size.Height = 540.000000000000000000
+    Size.PlatformDefault = False
+    TabIndex = 0
+    TabOrder = 0
+    TabPosition = PlatformDefault
+    Sizes = (
+      746s
+      514s
+      746s
+      514s)
+    object tiColumns: TTabItem
+      CustomIcon = <
+        item
+        end>
+      IsSelected = True
+      Size.Width = 67.000000000000000000
+      Size.Height = 26.000000000000000000
+      Size.PlatformDefault = False
+      StyleLookup = ''
+      TabOrder = 0
+      Text = 'Columns'
+      ExplicitSize.cx = 69.000000000000000000
+      ExplicitSize.cy = 26.000000000000000000
+      object btnColCreate: TButton
+        Align = Bottom
+        Position.Y = 484.000000000000000000
+        Size.Width = 746.000000000000000000
+        Size.Height = 30.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 0
+        Text = 'Create'
+        OnClick = btnColCreateClick
+      end
+    end
+    object tiRows: TTabItem
+      CustomIcon = <
+        item
+        end>
+      IsSelected = False
+      Size.Width = 48.000000000000000000
+      Size.Height = 26.000000000000000000
+      Size.PlatformDefault = False
+      StyleLookup = ''
+      TabOrder = 0
+      Text = 'Rows'
+      ExplicitSize.cx = 69.000000000000000000
+      ExplicitSize.cy = 26.000000000000000000
+    end
+  end
+  object Panel1: TPanel
+    Align = Bottom
+    Position.Y = 540.000000000000000000
+    Size.Width = 746.000000000000000000
+    Size.Height = 73.000000000000000000
+    Size.PlatformDefault = False
+    TabOrder = 1
+    object btnSave: TButton
+      Align = MostLeft
+      Size.Width = 100.000000000000000000
+      Size.Height = 73.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 0
+      Text = 'Save'
+    end
+    object btnCancel: TButton
+      Align = MostRight
+      Position.X = 646.000000000000000000
+      Size.Width = 100.000000000000000000
+      Size.Height = 73.000000000000000000
+      Size.PlatformDefault = False
+      TabOrder = 1
+      Text = 'Cancel'
+      OnClick = btnCancelClick
+    end
+  end
+end

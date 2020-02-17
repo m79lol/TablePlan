@@ -1,0 +1,39 @@
+inherited frmSettings_LgXhdpiPh: TfrmSettings_LgXhdpiPh
+  ClientHeight = 695
+  ClientWidth = 450
+  DesignerMasterStyle = 0
+  inherited TabControl1: TTabControl
+    Anchors = [akLeft, akTop, akRight]
+    Size.Width = 450.000000000000000000
+    Size.Height = 622.000000000000000000
+    TabHeight = 49.000000000000000000
+    Sizes = (
+      450s
+      573s
+      450s
+      573s)
+    inherited tiColumns: TTabItem
+      Size.Width = 225.000000000000000000
+      Size.Height = 49.000000000000000000
+      ExplicitSize.cx = 69.000000000000000000
+      ExplicitSize.cy = 26.000000000000000000
+      inherited btnColCreate: TButton
+        Position.Y = 543.000000000000000000
+        Size.Width = 450.000000000000000000
+      end
+    end
+    inherited tiRows: TTabItem
+      Size.Width = 225.000000000000000000
+      Size.Height = 49.000000000000000000
+      ExplicitSize.cx = 69.000000000000000000
+      ExplicitSize.cy = 26.000000000000000000
+    end
+  end
+  inherited Panel1: TPanel
+    Position.Y = 622.000000000000000000
+    Size.Width = 450.000000000000000000
+    inherited btnCancel: TButton
+      Position.X = 350.000000000000000000
+    end
+  end
+end

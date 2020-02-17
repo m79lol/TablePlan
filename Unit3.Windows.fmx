@@ -1,0 +1,19 @@
+inherited frmSettings_Windows: TfrmSettings_Windows
+  DesignerMasterStyle = 0
+  inherited TabControl1: TTabControl
+    Anchors = [akLeft, akTop, akRight]
+    Sizes = (
+      746s
+      514s
+      746s
+      514s)
+    inherited tiColumns: TTabItem
+      ExplicitSize.cx = 69.000000000000000000
+      ExplicitSize.cy = 26.000000000000000000
+    end
+    inherited tiRows: TTabItem
+      ExplicitSize.cx = 69.000000000000000000
+      ExplicitSize.cy = 26.000000000000000000
+    end
+  end
+end
