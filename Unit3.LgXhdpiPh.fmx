@@ -2,7 +2,7 @@ inherited frmSettings_LgXhdpiPh: TfrmSettings_LgXhdpiPh
   ClientHeight = 695
   ClientWidth = 450
   DesignerMasterStyle = 0
-  inherited TabControl1: TTabControl
+  inherited tc: TTabControl
     Anchors = [akLeft, akTop, akRight]
     Size.Width = 450.000000000000000000
     Size.Height = 622.000000000000000000
@@ -35,9 +35,17 @@ inherited frmSettings_LgXhdpiPh: TfrmSettings_LgXhdpiPh
       Size.Height = 49.000000000000000000
       ExplicitSize.cx = 69.000000000000000000
       ExplicitSize.cy = 26.000000000000000000
+      inherited sbRows: TScrollBar
+        Position.X = 432.000000000000000000
+        Size.Height = 573.000000000000000000
+      end
+      inherited pRows: TPanel
+        Size.Width = 432.000000000000000000
+        Size.Height = 573.000000000000000000
+      end
     end
   end
-  inherited Panel1: TPanel
+  inherited pBtns: TPanel
     Position.Y = 622.000000000000000000
     Size.Width = 450.000000000000000000
     inherited btnCancel: TButton

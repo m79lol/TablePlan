@@ -1,6 +1,6 @@
 inherited frmSettings_Windows: TfrmSettings_Windows
   DesignerMasterStyle = 0
-  inherited TabControl1: TTabControl
+  inherited tc: TTabControl
     Anchors = [akLeft, akTop, akRight]
     Sizes = (
       746s

@@ -8,8 +8,9 @@ object frmSettings: TfrmSettings
   FormFactor.Height = 480
   FormFactor.Devices = [Desktop]
   OnCreate = FormCreate
+  OnResize = FormResize
   DesignerMasterStyle = 0
-  object TabControl1: TTabControl
+  object tc: TTabControl
     Align = Client
     Size.Width = 746.000000000000000000
     Size.Height = 540.000000000000000000
@@ -79,9 +80,115 @@ object frmSettings: TfrmSettings
       Text = 'Rows'
       ExplicitSize.cx = 69.000000000000000000
       ExplicitSize.cy = 26.000000000000000000
+      object sbRows: TScrollBar
+        Align = Right
+        Max = 270.000000000000000000
+        SmallChange = 0.000000000000000000
+        Orientation = Vertical
+        Position.X = 728.000000000000000000
+        Size.Width = 18.000000000000000000
+        Size.Height = 514.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 0
+        OnChange = sbRowsChange
+      end
+      object pRows: TPanel
+        Align = Client
+        Size.Width = 728.000000000000000000
+        Size.Height = 514.000000000000000000
+        Size.PlatformDefault = False
+        TabOrder = 1
+        object pRowsInner: TPanel
+          Size.Width = 105.000000000000000000
+          Size.Height = 270.000000000000000000
+          Size.PlatformDefault = False
+          TabOrder = 0
+          object cbAfter: TCheckBox
+            Align = MostTop
+            Size.Width = 105.000000000000000000
+            Size.Height = 30.000000000000000000
+            Size.PlatformDefault = False
+            TabOrder = 8
+            Text = 'After Life'
+          end
+          object cbLife: TCheckBox
+            Align = MostTop
+            Position.Y = 30.000000000000000000
+            Size.Width = 105.000000000000000000
+            Size.Height = 30.000000000000000000
+            Size.PlatformDefault = False
+            TabOrder = 7
+            Text = 'Whole Life'
+          end
+          object cb5Years: TCheckBox
+            Align = MostTop
+            IsChecked = True
+            Position.Y = 60.000000000000000000
+            Size.Width = 105.000000000000000000
+            Size.Height = 30.000000000000000000
+            Size.PlatformDefault = False
+            TabOrder = 6
+            Text = '5 years'
+          end
+          object cbYear: TCheckBox
+            Align = MostTop
+            Position.Y = 90.000000000000000000
+            Size.Width = 105.000000000000000000
+            Size.Height = 30.000000000000000000
+            Size.PlatformDefault = False
+            TabOrder = 5
+            Text = 'Year'
+          end
+          object cbHalf: TCheckBox
+            Align = MostTop
+            Position.Y = 120.000000000000000000
+            Size.Width = 105.000000000000000000
+            Size.Height = 30.000000000000000000
+            Size.PlatformDefault = False
+            TabOrder = 4
+            Text = 'Half year'
+          end
+          object cbQuarter: TCheckBox
+            Align = MostTop
+            Position.Y = 150.000000000000000000
+            Size.Width = 105.000000000000000000
+            Size.Height = 30.000000000000000000
+            Size.PlatformDefault = False
+            TabOrder = 3
+            Text = 'Quarter'
+          end
+          object cbMonth: TCheckBox
+            Align = MostTop
+            Position.Y = 180.000000000000000000
+            Size.Width = 105.000000000000000000
+            Size.Height = 30.000000000000000000
+            Size.PlatformDefault = False
+            TabOrder = 2
+            Text = 'Month'
+          end
+          object cbWeek: TCheckBox
+            Align = MostTop
+            Position.Y = 210.000000000000000000
+            Size.Width = 105.000000000000000000
+            Size.Height = 30.000000000000000000
+            Size.PlatformDefault = False
+            TabOrder = 1
+            Text = 'Week'
+          end
+          object cbDays: TCheckBox
+            Align = MostTop
+            Position.Y = 240.000000000000000000
+            Size.Width = 105.000000000000000000
+            Size.Height = 30.000000000000000000
+            Size.PlatformDefault = False
+            TabOrder = 0
+            Text = 'Every day'
+          end
+        end
+      end
     end
   end
-  object Panel1: TPanel
+  object pBtns: TPanel
     Align = Bottom
     Position.Y = 540.000000000000000000
     Size.Width = 746.000000000000000000

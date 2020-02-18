@@ -11,15 +11,27 @@ type
   TProcClick = procedure(Sender: TObject) of object;
 
   TfrmSettings = class(TForm)
-    TabControl1: TTabControl;
+    tc: TTabControl;
     tiColumns: TTabItem;
     tiRows: TTabItem;
-    Panel1: TPanel;
+    pBtns: TPanel;
     btnSave: TButton;
     btnCancel: TButton;
     btnColCreate: TButton;
     sbCols: TScrollBar;
     pCols: TPanel;
+    pRowsInner: TPanel;
+    cbAfter: TCheckBox;
+    cbLife: TCheckBox;
+    cb5Years: TCheckBox;
+    cbYear: TCheckBox;
+    cbHalf: TCheckBox;
+    cbQuarter: TCheckBox;
+    cbMonth: TCheckBox;
+    cbWeek: TCheckBox;
+    cbDays: TCheckBox;
+    sbRows: TScrollBar;
+    pRows: TPanel;
     procedure updateColsPositions();
     procedure changeColsPos(Sender: TObject; Step: Integer);
     procedure btnCancelClick(Sender: TObject);
@@ -29,6 +41,8 @@ type
     procedure btnColDownClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure sbColsChange(Sender: TObject);
+    procedure sbRowsChange(Sender: TObject);
+    procedure FormResize(Sender: TObject);
   private
     { Private declarations }
     colsList: TList;
@@ -102,11 +116,35 @@ procedure TfrmSettings.FormCreate(Sender: TObject);
 begin
   colsList := TList.Create;
   sbCols.SmallChange := panelHeight;
+  sbRows.SmallChange := panelHeight;
+end;
+
+procedure TfrmSettings.FormResize(Sender: TObject);
+var
+  isInnerBigger: boolean;
+begin
+  isInnerBigger := pRowsInner.Height > pRows.Height;
+  sbRows.Enabled := isInnerBigger;
+  sbRows.Visible := isInnerBigger;
+
+  if isInnerBigger then
+  begin
+    sbRows.Max := pRowsInner.Height - pRows.Height;
+  end
+  else
+  begin
+    sbRows.Max := 0;
+  end;
 end;
 
 procedure TfrmSettings.sbColsChange(Sender: TObject);
 begin
   updateColsPositions();
+end;
+
+procedure TfrmSettings.sbRowsChange(Sender: TObject);
+begin
+    pRows.Position.Y := -sbRows.Value;
 end;
 
 procedure TfrmSettings.btnCancelClick(Sender: TObject);
