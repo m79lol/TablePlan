@@ -1,11 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <BorlandProject>
 	<Transactions>
-    <Transaction>1899.12.30 00:00:00.000.973,\\fileserver\works$\Tyulkin\Мои документы\Embarcadero\Studio\Projects\blank\Unit1.fmx=\\fileserver\works$\Tyulkin\Мои документы\Embarcadero\Studio\Projects\Unit1.fmx</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.996,=\\fileserver\works$\Tyulkin\Мои документы\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.424,=\\fileserver\works$\Tyulkin\Мои документы\Embarcadero\Studio\Projects\blank\Unit2.pas</Transaction>
     <Transaction>1899.12.30 00:00:00.000.672,=\\fileserver\works$\Tyulkin\Мои документы\Embarcadero\Studio\Projects\blank\Unit3.pas</Transaction>
     <Transaction>1899.12.30 00:00:00.000.973,\\fileserver\works$\Tyulkin\Мои документы\Embarcadero\Studio\Projects\blank\Unit1.pas=\\fileserver\works$\Tyulkin\Мои документы\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.424,=\\fileserver\works$\Tyulkin\Мои документы\Embarcadero\Studio\Projects\blank\Unit2.pas</Transaction>
     <Transaction>1899.12.30 00:00:00.000.032,\\fileserver\works$\Tyulkin\Мои документы\Embarcadero\Studio\Projects\blank\Project1.dproj=\\fileserver\works$\Tyulkin\Мои документы\Embarcadero\Studio\Projects\Project1.dproj</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.996,=\\fileserver\works$\Tyulkin\Мои документы\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.973,\\fileserver\works$\Tyulkin\Мои документы\Embarcadero\Studio\Projects\blank\Unit1.fmx=\\fileserver\works$\Tyulkin\Мои документы\Embarcadero\Studio\Projects\Unit1.fmx</Transaction>
+    <Transaction>2020.02.19 09:35:20.187,=\\fileserver\works$\Tyulkin\Мои документы\Embarcadero\Studio\Projects\blank\Unit4.pas</Transaction>
+    <Transaction>2020.02.19 09:35:53.688,\\fileserver\works$\Tyulkin\Мои документы\Embarcadero\Studio\Projects\blank\Plan.DBTools.pas=\\fileserver\works$\Tyulkin\Мои документы\Embarcadero\Studio\Projects\blank\Unit4.pas</Transaction>
   </Transactions>
 </BorlandProject>
