@@ -15,7 +15,7 @@ object frmSettings: TfrmSettings
     Size.Width = 746.000000000000000000
     Size.Height = 540.000000000000000000
     Size.PlatformDefault = False
-    TabIndex = 1
+    TabIndex = 0
     TabOrder = 0
     TabPosition = PlatformDefault
     Sizes = (
@@ -27,7 +27,7 @@ object frmSettings: TfrmSettings
       CustomIcon = <
         item
         end>
-      IsSelected = False
+      IsSelected = True
       Size.Width = 67.000000000000000000
       Size.Height = 26.000000000000000000
       Size.PlatformDefault = False
@@ -71,7 +71,7 @@ object frmSettings: TfrmSettings
       CustomIcon = <
         item
         end>
-      IsSelected = True
+      IsSelected = False
       Size.Width = 48.000000000000000000
       Size.Height = 26.000000000000000000
       Size.PlatformDefault = False
@@ -122,7 +122,6 @@ object frmSettings: TfrmSettings
           end
           object cb5Years: TCheckBox
             Align = MostTop
-            IsChecked = True
             Position.Y = 60.000000000000000000
             Size.Width = 105.000000000000000000
             Size.Height = 30.000000000000000000

@@ -28,12 +28,27 @@ var
 implementation
 
 constructor TPlanDB.Create(Owner: TComponent);
+var
+  q: TFDQuery;
 begin
   inherited Create;
   FDConn := TFDConnection.Create(Owner);
   FDConn.DriverName := 'SQLite';
   FDConn.Params.Database := dbName;
   FDConn.Open;
+
+//  if not FDConn.Connected then
+//    raise Exception.Create('Could not connect to database.');
+
+  q.Connection := FDConn;
+  q.ExecSQL('CREATE TABLE IF NOT EXISTS domains ('
+    + 'id INTEGER PRIMARY KEY ASC AUTOINCREMENT,'
+    + 'name VARCHAR(128) NOT NULL UNIQUE,'
+    + 'active BOOLEAN NOT NULL CHECK (active = 0 or active = 1) DEFAULT 1,'
+    + 'num INT NOT NULL'
+    + ')'
+  );
+
 end;
 
 destructor TPlanDB.Destroy;
