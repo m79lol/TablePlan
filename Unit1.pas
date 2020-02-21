@@ -37,8 +37,7 @@ end;
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin
-  db := TPlanDB.Create(self);
-//  SELECT name FROM sqlite_master WHERE type='table' AND name='{table_name}';
+  db := TPlanDB.Create;
 end;
 
 procedure TForm1.FormDestroy(Sender: TObject);

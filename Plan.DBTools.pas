@@ -39,7 +39,7 @@ type
     query: TFDQuery;
   public
     { Public declarations }
-    constructor Create(Owner: TComponent);
+    constructor Create;
     destructor Destroy; override;
 
     function loadDomains(): TDomainList;
@@ -54,10 +54,15 @@ var
 
 implementation
 
-constructor TPlanDB.Create(Owner: TComponent);
+uses FireDAC.DApt;
+
+//uses FireDAC.ConsoleUI.Wait, FireDAC.Stan.Def, FireDAC.DApt, FireDAC.Stan.Async,
+//  FireDAC.Phys.Oracle, FireDAC.Phys.MSSQL, FireDAC.Stan.Consts;
+
+constructor TPlanDB.Create;
 begin
   inherited Create;
-  FDConn := TFDConnection.Create(Owner);
+  FDConn := TFDConnection.Create(nil);
   FDConn.DriverName := 'SQLite';
   FDConn.Params.Database := dbName;
   FDConn.Open;
@@ -65,9 +70,9 @@ begin
 //  if not FDConn.Connected then
 //    raise Exception.Create('Could not connect to database.');
 
-  query := TFDQuery.Create(Owner);
+  query := TFDQuery.Create(nil);
   query.Connection := FDConn;
-//  query.Params.BindMode := pByNumber;
+  query.Params.BindMode := pByNumber;
 
   query.ExecSQL('CREATE TABLE IF NOT EXISTS domains ( '
     + 'id INTEGER PRIMARY KEY ASC AUTOINCREMENT, '
@@ -110,7 +115,9 @@ end;
 
 destructor TPlanDB.Destroy;
 begin
+  query.Free;
   FDConn.Close;
+  FDConn.Free;
   inherited Destroy;
 end;
 
