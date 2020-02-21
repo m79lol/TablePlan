@@ -6,8 +6,8 @@ uses
   System.Classes, FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Error,
   FireDAC.UI.Intf, FireDAC.Phys.Intf, FireDAC.Stan.Def, FireDAC.Stan.Pool,
   FireDAC.Stan.Async, FireDAC.Phys,FireDAC.Phys.SQLite, FireDAC.Phys.SQLiteDef,
-  FireDAC.Stan.ExprFuncs, FireDAC.FMXUI.Wait, Data.DB, FireDAC.Comp.Client,
-  Generics.Collections;
+  FireDAC.Stan.ExprFuncs, FireDAC.Stan.Param, FireDAC.FMXUI.Wait, Data.DB,
+  FireDAC.Comp.Client,Generics.Collections;
 
 type
   TRecordState = (Nothing, New, Deleted, Updated);
@@ -36,6 +36,7 @@ type
   private
     { Private declarations }
     FDConn: TFDConnection;
+    query: TFDQuery;
   public
     { Public declarations }
     constructor Create(Owner: TComponent);
@@ -43,8 +44,8 @@ type
 
     function loadDomains(): TDomainList;
     function loadPeriods(): TPeriodList;
-    function saveDomains(domains: TDomainList);
-    function savePeriods(periods: TPeriodList);
+    procedure saveDomains(domains: TDomainList);
+    procedure savePeriods(periods: TPeriodList);
 
   end;
 
@@ -54,8 +55,6 @@ var
 implementation
 
 constructor TPlanDB.Create(Owner: TComponent);
-var
-  q: TFDQuery;
 begin
   inherited Create;
   FDConn := TFDConnection.Create(Owner);
@@ -66,8 +65,11 @@ begin
 //  if not FDConn.Connected then
 //    raise Exception.Create('Could not connect to database.');
 
-  q.Connection := FDConn;
-  q.ExecSQL('CREATE TABLE IF NOT EXISTS domains ( '
+  query := TFDQuery.Create(Owner);
+  query.Connection := FDConn;
+//  query.Params.BindMode := pByNumber;
+
+  query.ExecSQL('CREATE TABLE IF NOT EXISTS domains ( '
     + 'id INTEGER PRIMARY KEY ASC AUTOINCREMENT, '
     + 'name VARCHAR(128) NOT NULL UNIQUE, '
     + 'active BOOLEAN NOT NULL CHECK (active = 0 or active = 1) DEFAULT 1, '
@@ -75,14 +77,14 @@ begin
     + ')'
   );
 
-  q.ExecSQL('CREATE TABLE IF NOT EXISTS periods ( '
+  query.ExecSQL('CREATE TABLE IF NOT EXISTS periods ( '
     + 'id INTEGER PRIMARY KEY ASC, '
     + 'name VARCHAR(128) NOT NULL UNIQUE, '
     + 'active BOOLEAN NOT NULL CHECK (active = 0 or active = 1) DEFAULT 1 '
     + ')'
   );
 
-  q.ExecSQL('CREATE TABLE IF NOT EXISTS period_dates ( '
+  query.ExecSQL('CREATE TABLE IF NOT EXISTS period_dates ( '
     + 'id INTEGER PRIMARY KEY ASC AUTOINCREMENT, '
     + 'period INTEGER NOT NULL REFERENCES periods (id), '
     + 'alive BOOLEAN NOT NULL CHECK (alive = 0 or alive = 1) DEFAULT 1, '
@@ -90,7 +92,7 @@ begin
     + ')'
   );
 
-  q.ExecSQL('CREATE TABLE IF NOT EXISTS doings ( '
+  query.ExecSQL('CREATE TABLE IF NOT EXISTS doings ( '
     + 'id INTEGER PRIMARY KEY ASC AUTOINCREMENT, '
     + 'domain INTEGER NOT NULL REFERENCES domains (id), '
     + 'period INTEGER NOT NULL REFERENCES period_dates (id), '
@@ -114,95 +116,149 @@ end;
 
 function TPlanDB.loadDomains(): TDomainList;
 var
-  q: TFDQuery;
   domain: TDomain;
 begin
   try
-    q.Connection := FDConn;
-    q.SQL.Text := 'SELECT id, name, active, num FROM domains WHERE active = 1';
-    q.Open();
+    query.SQL.Text := 'SELECT id, name, active, num FROM domains WHERE active = 1';
+    query.Open();
 
     result := TDomainList.Create;
 
-    while not q.Eof do
+    while not query.Eof do
     begin
-      domain.id := q.FieldByName('id').AsInteger;
-      domain.name := q.FieldByName('name').AsString;
-      domain.num := q.FieldByName('num').AsInteger;
-      domain.active := q.FieldByName('active').AsBoolean;
+      domain.id := query.FieldByName('id').AsInteger;
+      domain.name := query.FieldByName('name').AsString;
+      domain.num := query.FieldByName('num').AsInteger;
+      domain.active := query.FieldByName('active').AsBoolean;
       domain.recstate := TRecordState.Nothing;
       result.Add(domain);
-      q.Next;
+      query.Next;
     end;
 
   finally
-    q.Close;
-    q.DisposeOf;
+    query.Close;
+    query.SQL.Clear;
   end;
 end;
 
 function TPlanDB.loadPeriods(): TPeriodList;
 var
-  q: TFDQuery;
   period: TPeriod;
 begin
   try
-    q.Connection := FDConn;
-    q.SQL.Text := 'SELECT id, name, active FROM periods';
-    q.Open();
+    query.SQL.Text := 'SELECT id, name, active FROM periods';
+    query.Open();
 
     result := TPeriodList.Create;
 
-    while not q.Eof do
+    while not query.Eof do
     begin
-      period.id := q.FieldByName('id').AsInteger;
-      period.name := q.FieldByName('name').AsString;
-      period.active := q.FieldByName('active').AsBoolean;
+      period.id := query.FieldByName('id').AsInteger;
+      period.name := query.FieldByName('name').AsString;
+      period.active := query.FieldByName('active').AsBoolean;
       period.recstate := TRecordState.Nothing;
       result.Add(period);
-      q.Next;
+      query.Next;
     end;
 
   finally
-    q.Close;
-    q.DisposeOf;
+    query.Close;
+    query.SQL.Clear;
   end;
 end;
 
-function TPlanDB.saveDomains(domains: TDomainList);
+procedure TPlanDB.saveDomains(domains: TDomainList);
 var
-  q: TFDQuery;
   domain: TDomain;
-
   i, k: integer;
 begin
-  q.Connection := FDConn;
+  FDConn.StartTransaction;
 
-  k := domains.Count - 1;
-  for i := 0 to k do
-  begin
-    domain := domains[i];
-    case domain.recstate of
-      TRecordState.Nothing : continue;
-      TRecordState.New :
-      begin
-        q.ExecSQL('INSERT INTO domains (name, num) VALUES (:name, :num)');
+  try
+    k := domains.Count - 1;
+    for i := 0 to k do
+    begin
+      domain := domains[i];
+      case domain.recstate of
+        TRecordState.Nothing: continue;
+        TRecordState.New:
+        begin
+          query.SQL.Text := 'INSERT INTO domains (name, num) VALUES (:name, :num)';
+
+          query.Params.ArraySize := 1;
+          query.Params[0].AsStrings[0] := domain.name;
+          query.Params[1].AsIntegers[0] := domain.num;
+
+          query.Execute(query.Params.ArraySize, 0);
+          query.SQL.Clear;
+        end;
+        TRecordState.Deleted:
+        begin
+          query.SQL.Text := 'UPDATE domains SET active = 0 WHERE id = :id';
+
+          query.Params.ArraySize := 1;
+          query.Params[0].AsIntegers[0] := domain.id;
+
+          query.Execute(query.Params.ArraySize, 0);
+          query.SQL.Clear;
+        end;
+        TRecordState.Updated:
+        begin
+          query.SQL.Text := 'UPDATE domains SET name = :name, num = :num WHERE id = :id';
+
+          query.Params.ArraySize := 1;
+          query.Params[0].AsStrings[0] := domain.name;
+          query.Params[1].AsIntegers[0] := domain.num;
+          query.Params[2].AsIntegers[0] := domain.id;
+
+          query.Execute(query.Params.ArraySize, 0);
+          query.SQL.Clear;
+        end;
       end;
-
     end;
+
+    FDConn.Commit;
+  except
+    FDConn.Rollback;
+    raise;
   end;
+end;
 
+procedure TPlanDB.savePeriods(periods: TPeriodList);
+var
+  period: TPeriod;
+  i, k: integer;
+begin
+  FDConn.StartTransaction;
 
-  while not q.Eof do
-  begin
-    domain.id := q.FieldByName('id').AsInteger;
-    domain.name := q.FieldByName('name').AsString;
-    domain.num := q.FieldByName('num').AsInteger;
-    domain.active := q.FieldByName('active').AsBoolean;
-    result.Add(domain);
-    q.Next;
+  try
+    k := periods.Count - 1;
+    for i := 0 to k do
+    begin
+      period := periods[i];
+      case period.recstate of
+        TRecordState.Nothing: continue;
+        TRecordState.New: continue;
+        TRecordState.Deleted: continue;
+        TRecordState.Updated:
+        begin
+          query.SQL.Text := 'UPDATE periods SET active = :active WHERE id = :id';
+
+          query.Params.ArraySize := 1;
+          query.Params[0].AsIntegers[0] := Integer(period.active);
+          query.Params[1].AsIntegers[0] := period.id;
+
+          query.Execute(query.Params.ArraySize, 0);
+          query.SQL.Clear;
+        end;
+      end;
+    end;
+
+    FDConn.Commit;
+  except
+    FDConn.Rollback;
+    raise;
   end;
-
 end;
 
 end.
