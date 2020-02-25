@@ -7,7 +7,7 @@ uses
   FireDAC.UI.Intf, FireDAC.Phys.Intf, FireDAC.Stan.Def, FireDAC.Stan.Pool,
   FireDAC.Stan.Async, FireDAC.Phys,FireDAC.Phys.SQLite, FireDAC.Phys.SQLiteDef,
   FireDAC.Stan.ExprFuncs, FireDAC.Stan.Param, FireDAC.FMXUI.Wait, Data.DB,
-  FireDAC.Comp.Client,Generics.Collections;
+  FireDAC.Comp.Client, Generics.Collections;
 
 type
   TRecordState = (Nothing, New, Deleted, Updated);
@@ -72,7 +72,7 @@ begin
 
   query := TFDQuery.Create(nil);
   query.Connection := FDConn;
-  query.Params.BindMode := pByNumber;
+//  query.Params.BindMode := pByNumber;
 
   query.ExecSQL('CREATE TABLE IF NOT EXISTS domains ( '
     + 'id INTEGER PRIMARY KEY ASC AUTOINCREMENT, '
@@ -191,34 +191,28 @@ begin
         TRecordState.New:
         begin
           query.SQL.Text := 'INSERT INTO domains (name, num) VALUES (:name, :num)';
-
-          query.Params.ArraySize := 1;
-          query.Params[0].AsStrings[0] := domain.name;
-          query.Params[1].AsIntegers[0] := domain.num;
-
-          query.Execute(query.Params.ArraySize, 0);
+          query.ParamByName('name').AsString := domain.name;
+          query.ParamByName('num').AsInteger := domain.num;
+          query.Execute;
+          query.Params.Clear;
           query.SQL.Clear;
         end;
         TRecordState.Deleted:
         begin
           query.SQL.Text := 'UPDATE domains SET active = 0 WHERE id = :id';
-
-          query.Params.ArraySize := 1;
-          query.Params[0].AsIntegers[0] := domain.id;
-
-          query.Execute(query.Params.ArraySize, 0);
+          query.ParamByName('id').AsInteger := domain.id;
+          query.Execute;
+          query.Params.Clear;
           query.SQL.Clear;
         end;
         TRecordState.Updated:
         begin
           query.SQL.Text := 'UPDATE domains SET name = :name, num = :num WHERE id = :id';
-
-          query.Params.ArraySize := 1;
-          query.Params[0].AsStrings[0] := domain.name;
-          query.Params[1].AsIntegers[0] := domain.num;
-          query.Params[2].AsIntegers[0] := domain.id;
-
-          query.Execute(query.Params.ArraySize, 0);
+          query.ParamByName('name').AsString := domain.name;
+          query.ParamByName('num').AsInteger := domain.num;
+          query.ParamByName('id').AsInteger := domain.id;
+          query.Execute;
+          query.Params.Clear;
           query.SQL.Clear;
         end;
       end;
@@ -250,12 +244,10 @@ begin
         TRecordState.Updated:
         begin
           query.SQL.Text := 'UPDATE periods SET active = :active WHERE id = :id';
-
-          query.Params.ArraySize := 1;
-          query.Params[0].AsIntegers[0] := Integer(period.active);
-          query.Params[1].AsIntegers[0] := period.id;
-
-          query.Execute(query.Params.ArraySize, 0);
+          query.ParamByName('active').AsBoolean := period.active;
+          query.ParamByName('id').AsInteger := period.id;
+          query.Execute;
+          query.Params.Clear;
           query.SQL.Clear;
         end;
       end;

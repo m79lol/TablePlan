@@ -9,6 +9,7 @@ object frmSettings: TfrmSettings
   FormFactor.Devices = [Desktop]
   OnCreate = FormCreate
   OnResize = FormResize
+  OnShow = FormShow
   DesignerMasterStyle = 0
   object tc: TTabControl
     Align = Client
