@@ -39,9 +39,10 @@ type
     cbDays: TCheckBox;
     sbRows: TScrollBar;
     pRows: TPanel;
-    procedure addDomainItem(domain: TDomain);
+    function findDomainItemBy(const panel: TPanel): integer;
+    procedure addDomainItem(const domain: TDomain);
     procedure updateColsPositions();
-    procedure changeColsPos(Sender: TObject; Step: Integer);
+    procedure changeColsPos(Sender: TObject; const Step: Integer);
     procedure btnCancelClick(Sender: TObject);
     procedure btnColCreateClick(Sender: TObject);
     procedure btnColDeleteClick(Sender: TObject);
@@ -52,15 +53,23 @@ type
     procedure sbRowsChange(Sender: TObject);
     procedure FormResize(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure btnSaveClick(Sender: TObject);
+    procedure edColChange(Sender: TObject);
+
   private
     { Private declarations }
-    domainItemList: TDomainItemList;
+    domainItems: TDomainItemList;
+    deletedDomains: TDomainList;
   public
     { Public declarations }
   end;
 
 const
-  panelHeight: Integer = 30;
+    panelHeight: Integer = 30;
+    btnUpName: string = 'Up';
+    btnDownName: string = 'Down';
+    btnDeleteName: string = 'Delete';
 
 var
   frmSettings: TfrmSettings;
@@ -73,13 +82,29 @@ implementation
 {$R *.Windows.fmx MSWINDOWS}
 {$R *.LgXhdpiPh.fmx ANDROID}
 
-procedure TfrmSettings.addDomainItem(domain: TDomain);
+function TfrmSettings.findDomainItemBy(const panel: TPanel): integer;
+var
+  i, k: integer;
+begin
+  k := domainItems.Count - 1;
+  for i := 0 to k do
+  begin
+    if domainItems.Items[i].panel = panel then
+    begin
+      result := i;
+      exit;
+    end;
+  end;
+  raise Exception.Create('Can''t find domain item by panel');
+end;
+
+procedure TfrmSettings.addDomainItem(const domain: TDomain);
 var
   domainItem: TDomainItem;
   p: TPanel;
   e: TEdit;
 
-  procedure createButton(name: string; procClick: TProcClick);
+  procedure createButton(const name: string; procClick: TProcClick);
   var
     b: TButton;
   begin
@@ -101,19 +126,20 @@ begin
   p.Parent := parent;
   p.Height := panelHeight;
 
-  createButton('Delete', btnColDeleteClick);
-  createButton('Down', btnColDownClick);
-  createButton('Up', btnColUpClick);
+  createButton(btnDeleteName, btnColDeleteClick);
+  createButton(btnDownName, btnColDownClick);
+  createButton(btnUpName, btnColUpClick);
 
   e := TEdit.Create(self);
   e.Visible := true;
   e.Align := TAlignLayout.Client;
   e.Parent := p;
   e.Height := p.Height;
+  e.OnChange := edColChange;
 
   domainItem.domain := domain;
   domainItem.panel := p;
-  domainItemList.Add(domainItem);
+  domainItems.Add(domainItem);
   updateColsPositions();
 end;
 
@@ -124,56 +150,82 @@ var
   b: TButton;
   j, childCount: Integer;
 
+  domainItem: TDomainItem;
+
 begin
-  colCount := domainItemList.Count;
+  colCount := domainItems.Count;
   sbCols.Max := panelHeight * colCount - pCols.Height;
 
   dec(colCount);
   for i:= 0 to colCount do
   begin
-    p := domainItemList.Items[i].panel;
+    domainItem := domainItems.Items[i];
+    p := domainItem.panel;
     p.Position.Y := i * panelHeight - sbCols.Value;
 
     childCount := p.ChildrenCount - 1;
     for j:= 0 to childCount do
     begin
-      if p.Children.Items[j].TagString = 'Up' then begin
+      if p.Children.Items[j].TagString = btnUpName then begin
         b := p.Children.Items[j] as TButton;
         b.Enabled := i <> 0;
       end
-      else if p.Children.Items[j].TagString = 'Down' then begin
+      else if p.Children.Items[j].TagString = btnDownName then begin
         b := p.Children.Items[j] as TButton;
         b.Enabled := i <> colCount;
       end;
     end;
+
+    domainItem.domain.num := i + 1;
+    domainItems.Items[i] := domainItem;
   end;
 end;
 
-procedure TfrmSettings.changeColsPos(Sender: TObject; Step: Integer);
+procedure TfrmSettings.changeColsPos(Sender: TObject; const step: Integer);
 var
   b: TButton;
   p: TPanel;
-  i, k: Integer;
+  i: Integer;
+  domainItem: TDomainItem;
 begin
   b := Sender as TButton;
   p := b.Parent as TPanel;
 
-  k := domainItemList.Count - 1;
-  for i := 0 to k do
-  begin
-    if domainItemList.Items[i].panel = p then
-    begin
-      domainItemList.Move(i, i + Step);
-      break;
-    end;
-  end;
+  i := findDomainItemBy(p);
+  domainItem := domainItems.Items[i];
+  domainItem.domain.recstate := TRecordState.Updated;
+  domainItems.Items[i] := domainItem;
 
+  domainItems.Move(i, i + step);
   updateColsPositions();
+end;
+
+procedure TfrmSettings.edColChange(Sender: TObject);
+var
+  e: TEdit;
+  p: TPanel;
+  i: Integer;
+  domainItem: TDomainItem;
+begin
+  e := Sender as TEdit;
+  p := e.Parent as TPanel;
+
+  i := findDomainItemBy(p);
+  domainItem := domainItems.Items[i];
+  domainItem.domain.recstate := TRecordState.Updated;
+  domainItems.Items[i] := domainItem;
+end;
+
+procedure TfrmSettings.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  deletedDomains.Clear;
+  domainItems.Clear;
 end;
 
 procedure TfrmSettings.FormCreate(Sender: TObject);
 begin
-  domainItemList := TDomainItemList.Create;
+  domainItems := TDomainItemList.Create;
+  deletedDomains := TDomainList.Create;
   sbCols.SmallChange := panelHeight;
   sbRows.SmallChange := panelHeight;
 end;
@@ -222,13 +274,19 @@ end;
 
 procedure TfrmSettings.btnCancelClick(Sender: TObject);
 begin
-  Self.Close;
+  Close;
 end;
 
 procedure TfrmSettings.btnColCreateClick(Sender: TObject);
 var
   domain: TDomain;
 begin
+  domain.id := 0;
+  domain.name := '';
+  domain.active := true;
+  domain.num := 0;
+  domain.recstate := TRecordState.New;
+
   addDomainItem(domain);
   updateColsPositions();
 end;
@@ -237,20 +295,21 @@ procedure TfrmSettings.btnColDeleteClick(Sender: TObject);
 var
   b: TButton;
   p: TPanel;
-  i, k: Integer;
+  i: Integer;
+  domain: TDomain;
 begin
   b := Sender as TButton;
   p := b.Parent as TPanel;
 
-  k := domainItemList.Count - 1;
-  for i := 0 to k do
+  i := findDomainItemBy(p);
+  domain := domainItems.Items[i].domain;
+  if domain.id <> 0 then
   begin
-    if domainItemList.Items[i].panel = p then
-    begin
-      domainItemList.Delete(i);
-      break;
-    end;
+    domain.active := false;
+    domain.recstate := TRecordState.Deleted;
+    deletedDomains.Add(domain);
   end;
+  domainItems.Delete(i);
   p.Destroy;
 
   updateColsPositions();
@@ -259,6 +318,28 @@ end;
 procedure TfrmSettings.btnColUpClick(Sender: TObject);
 begin
   changeColsPos(Sender, -1);
+end;
+
+procedure TfrmSettings.btnSaveClick(Sender: TObject);
+var
+  domains: TDomainList;
+  domain: TDomain;
+  i, k: integer;
+begin
+  k := deletedDomains.Count - 1;
+  for i := 0 to k do
+  begin
+    domains.Add(deletedDomains.Items[i]);
+  end;
+
+  k := domainItems.Count - 1;
+  for i := 0 to k do
+  begin
+    domains.Add(domainItems.Items[i].domain);
+  end;
+
+  db.saveDomains(domains);
+  Close;
 end;
 
 procedure TfrmSettings.btnColDownClick(Sender: TObject);
