@@ -8,6 +8,7 @@ object frmSettings: TfrmSettings
   FormFactor.Height = 480
   FormFactor.Devices = [Desktop]
   OnCreate = FormCreate
+  OnClose = FormClose
   OnResize = FormResize
   OnShow = FormShow
   DesignerMasterStyle = 0
@@ -202,6 +203,7 @@ object frmSettings: TfrmSettings
       Size.PlatformDefault = False
       TabOrder = 0
       Text = 'Save'
+      OnClick = btnSaveClick
     end
     object btnCancel: TButton
       Align = MostRight
