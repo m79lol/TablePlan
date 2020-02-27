@@ -17,7 +17,10 @@ type
     name: string;
     active: boolean;
     num: integer;
-    recstate: TRecordState;
+    FRecState: TRecordState;
+    constructor Create(RecState: TRecordState);
+    procedure SetRecState(Value: TRecordState);
+    property recstate: TRecordState read FRecState write SetRecState;
   end;
   TDomainList = TList<TDomain>;
 
@@ -58,6 +61,23 @@ uses FireDAC.DApt;
 
 //uses FireDAC.ConsoleUI.Wait, FireDAC.Stan.Def, FireDAC.DApt, FireDAC.Stan.Async,
 //  FireDAC.Phys.Oracle, FireDAC.Phys.MSSQL, FireDAC.Stan.Consts;
+
+constructor TDomain.Create(RecState: TRecordState);
+begin
+  id := 0;
+  name := '';
+  active := true;
+  num := 0;
+  FRecState := RecState;
+end;
+
+procedure TDomain.SetRecState(Value: TRecordState);
+begin
+  if FRecState <> TRecordState.New then
+  begin
+    FRecState := Value;
+  end;
+end;
 
 constructor TPlanDB.Create;
 begin
@@ -126,18 +146,18 @@ var
   domain: TDomain;
 begin
   try
-    query.SQL.Text := 'SELECT id, name, active, num FROM domains WHERE active = 1';
+    query.SQL.Text := 'SELECT id, name, active, num FROM domains WHERE active = 1 ORDER BY num ASC';
     query.Open();
 
     result := TDomainList.Create;
 
     while not query.Eof do
     begin
+      domain := TDomain.Create(TRecordState.Nothing);
       domain.id := query.FieldByName('id').AsInteger;
       domain.name := query.FieldByName('name').AsString;
       domain.num := query.FieldByName('num').AsInteger;
       domain.active := query.FieldByName('active').AsBoolean;
-      domain.recstate := TRecordState.Nothing;
       result.Add(domain);
       query.Next;
     end;
@@ -153,7 +173,7 @@ var
   period: TPeriod;
 begin
   try
-    query.SQL.Text := 'SELECT id, name, active FROM periods';
+    query.SQL.Text := 'SELECT id, name, active FROM periods ORDER BY id ASC';
     query.Open();
 
     result := TPeriodList.Create;

@@ -2,3 +2,4 @@ __history/
 __recovery/
 Debug/
 *.identcache
+*.local

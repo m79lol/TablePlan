@@ -112,7 +112,7 @@ var
     b.Text := name;
     b.Visible := true;
     b.Align := TAlignLayout.MostRight;
-    b.Parent := pCols;
+    b.Parent := p;
     b.Height := p.Height;
     b.Width := 56;
     b.OnClick := procClick;
@@ -123,7 +123,7 @@ begin
   p := TPanel.Create(self);
   p.Align := TAlignLayout.Horizontal;
   p.Visible := true;
-  p.Parent := parent;
+  p.Parent := pCols;
   p.Height := panelHeight;
 
   createButton(btnDeleteName, btnColDeleteClick);
@@ -135,12 +135,12 @@ begin
   e.Align := TAlignLayout.Client;
   e.Parent := p;
   e.Height := p.Height;
+  e.Text := domain.name;
   e.OnChange := edColChange;
 
   domainItem.domain := domain;
   domainItem.panel := p;
   domainItems.Add(domainItem);
-  updateColsPositions();
 end;
 
 procedure TfrmSettings.updateColsPositions();
@@ -213,11 +213,19 @@ begin
   i := findDomainItemBy(p);
   domainItem := domainItems.Items[i];
   domainItem.domain.recstate := TRecordState.Updated;
+  domainItem.domain.name := e.Text;
   domainItems.Items[i] := domainItem;
 end;
 
 procedure TfrmSettings.FormClose(Sender: TObject; var Action: TCloseAction);
+var
+  i, k: integer;
 begin
+  k := domainItems.Count - 1;
+  for i := 0 to k do
+  begin
+    domainItems.Items[i].panel.Destroy;
+  end;
   deletedDomains.Clear;
   domainItems.Clear;
 end;
@@ -281,12 +289,7 @@ procedure TfrmSettings.btnColCreateClick(Sender: TObject);
 var
   domain: TDomain;
 begin
-  domain.id := 0;
-  domain.name := '';
-  domain.active := true;
-  domain.num := 0;
-  domain.recstate := TRecordState.New;
-
+  domain := TDomain.Create(TRecordState.New);
   addDomainItem(domain);
   updateColsPositions();
 end;
@@ -303,7 +306,7 @@ begin
 
   i := findDomainItemBy(p);
   domain := domainItems.Items[i].domain;
-  if domain.id <> 0 then
+  if domain.recstate <> TRecordState.New then
   begin
     domain.active := false;
     domain.recstate := TRecordState.Deleted;
@@ -323,9 +326,10 @@ end;
 procedure TfrmSettings.btnSaveClick(Sender: TObject);
 var
   domains: TDomainList;
-  domain: TDomain;
   i, k: integer;
 begin
+  domains := TDomainList.Create();
+
   k := deletedDomains.Count - 1;
   for i := 0 to k do
   begin
@@ -339,6 +343,7 @@ begin
   end;
 
   db.saveDomains(domains);
+  domains.Clear;
   Close;
 end;
 

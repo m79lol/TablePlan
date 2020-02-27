@@ -22,7 +22,6 @@ type
 
 var
   Form1: TForm1;
-  db: TPlanDB;
 
 implementation
 
