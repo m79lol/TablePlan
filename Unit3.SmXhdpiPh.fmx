@@ -12,36 +12,41 @@ inherited frmSettings_SmXhdpiPh: TfrmSettings_SmXhdpiPh
       253s
       250s
       253s)
-    inherited tiColumns: TTabItem
+    inherited tiDomains: TTabItem
       Size.Width = 125.000000000000000000
       Size.Height = 49.000000000000000000
       ExplicitSize.cx = 69.000000000000000000
       ExplicitSize.cy = 26.000000000000000000
-      inherited btnColCreate: TButton
+      inherited btnDomainCreate: TButton
         Position.Y = 223.000000000000000000
         Size.Width = 250.000000000000000000
       end
-      inherited pCols: TPanel
+      inherited pDomains: TPanel
         Size.Width = 232.000000000000000000
         Size.Height = 223.000000000000000000
       end
-      inherited sbCols: TScrollBar
+      inherited sbDomains: TScrollBar
         Position.X = 232.000000000000000000
         Size.Height = 223.000000000000000000
       end
     end
-    inherited tiRows: TTabItem
+    inherited tiPeriods: TTabItem
       Size.Width = 125.000000000000000000
       Size.Height = 49.000000000000000000
       ExplicitSize.cx = 69.000000000000000000
       ExplicitSize.cy = 26.000000000000000000
-      inherited sbRows: TScrollBar
+      inherited sbPeriods: TScrollBar
         Position.X = 232.000000000000000000
         Size.Height = 253.000000000000000000
       end
-      inherited pRows: TPanel
+      inherited pPeriods: TPanel
         Size.Width = 232.000000000000000000
         Size.Height = 253.000000000000000000
+        inherited pPeriodsInner: TPanel
+          Anchors = [akLeft]
+          Position.X = 311.000000000000000000
+          Position.Y = 122.000000000000000000
+        end
       end
     end
   end

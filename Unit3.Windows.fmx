@@ -7,13 +7,20 @@ inherited frmSettings_Windows: TfrmSettings_Windows
       514s
       746s
       514s)
-    inherited tiColumns: TTabItem
+    inherited tiDomains: TTabItem
       ExplicitSize.cx = 69.000000000000000000
       ExplicitSize.cy = 26.000000000000000000
     end
-    inherited tiRows: TTabItem
+    inherited tiPeriods: TTabItem
       ExplicitSize.cx = 69.000000000000000000
       ExplicitSize.cy = 26.000000000000000000
+      inherited pPeriods: TPanel
+        inherited pPeriodsInner: TPanel
+          Anchors = [akLeft]
+          Position.X = 311.000000000000000000
+          Position.Y = 122.000000000000000000
+        end
+      end
     end
   end
 end

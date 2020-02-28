@@ -28,7 +28,10 @@ type
     id: integer;
     name: string;
     active: boolean;
-    recstate: TRecordState;
+    FRecState: TRecordState;
+    constructor Create(RecState: TRecordState);
+    procedure SetRecState(Value: TRecordState);
+    property recstate: TRecordState read FRecState write SetRecState;
   end;
   TPeriodList = TList<TPeriod>;
 
@@ -79,7 +82,25 @@ begin
   end;
 end;
 
+constructor TPeriod.Create(RecState: TRecordState);
+begin
+  id := 0;
+  name := '';
+  active := true;
+  FRecState := RecState;
+end;
+
+procedure TPeriod.SetRecState(Value: TRecordState);
+begin
+  if FRecState <> TRecordState.New then
+  begin
+    FRecState := Value;
+  end;
+end;
+
 constructor TPlanDB.Create;
+var
+  periodsCnt: integer;
 begin
   inherited Create;
   FDConn := TFDConnection.Create(nil);
@@ -131,6 +152,32 @@ begin
     + ')'
   );
 
+  periodsCnt := 0;
+  try
+    query.SQL.Text := 'SELECT count(1) cnt FROM periods';
+    query.Open();
+    periodsCnt := query.FieldByName('cnt').AsInteger;
+  except
+    query.Close;
+    query.SQL.Clear;
+    raise;
+  end;
+  query.Close;
+  query.SQL.Clear;
+
+  if periodsCnt = 0 then
+  begin
+    query.ExecSQL('INSERT INTO periods(id, name) values (:id, :name)', [1, 'After life']);
+    query.ExecSQL('INSERT INTO periods(id, name) values (:id, :name)', [2, 'Life']);
+    query.ExecSQL('INSERT INTO periods(id, name) values (:id, :name)', [3, '5 years']);
+    query.ExecSQL('INSERT INTO periods(id, name) values (:id, :name)', [4, 'Year']);
+    query.ExecSQL('INSERT INTO periods(id, name) values (:id, :name)', [5, 'Half-year']);
+    query.ExecSQL('INSERT INTO periods(id, name) values (:id, :name)', [6, 'Quarter']);
+    query.ExecSQL('INSERT INTO periods(id, name) values (:id, :name)', [7, 'Month']);
+    query.ExecSQL('INSERT INTO periods(id, name) values (:id, :name)', [8, 'Week']);
+    query.ExecSQL('INSERT INTO periods(id, name) values (:id, :name)', [9, 'Day']);
+  end;
+
 end;
 
 destructor TPlanDB.Destroy;
@@ -162,10 +209,14 @@ begin
       query.Next;
     end;
 
-  finally
+  except
     query.Close;
     query.SQL.Clear;
+    raise;
   end;
+
+  query.Close;
+  query.SQL.Clear;
 end;
 
 function TPlanDB.loadPeriods(): TPeriodList;
@@ -180,18 +231,22 @@ begin
 
     while not query.Eof do
     begin
+      period := TPeriod.Create(TRecordState.Nothing);
       period.id := query.FieldByName('id').AsInteger;
       period.name := query.FieldByName('name').AsString;
       period.active := query.FieldByName('active').AsBoolean;
-      period.recstate := TRecordState.Nothing;
       result.Add(period);
       query.Next;
     end;
 
-  finally
+  except
     query.Close;
     query.SQL.Clear;
+    raise;
   end;
+
+  query.Close;
+  query.SQL.Clear;
 end;
 
 procedure TPlanDB.saveDomains(domains: TDomainList);

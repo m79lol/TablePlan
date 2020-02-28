@@ -17,50 +17,52 @@ type
   end;
   TDomainItemList = TList<TDomainItem>;
 
+  TPeriodItem = record
+    checkbox: TCheckBox;
+    period: TPeriod;
+  end;
+  TPeriodItemList = TList<TPeriodItem>;
+
   TfrmSettings = class(TForm)
     tc: TTabControl;
-    tiColumns: TTabItem;
-    tiRows: TTabItem;
+    tiDomains: TTabItem;
+    tiPeriods: TTabItem;
     pBtns: TPanel;
     btnSave: TButton;
     btnCancel: TButton;
-    btnColCreate: TButton;
-    sbCols: TScrollBar;
-    pCols: TPanel;
-    pRowsInner: TPanel;
-    cbAfter: TCheckBox;
-    cbLife: TCheckBox;
-    cb5Years: TCheckBox;
-    cbYear: TCheckBox;
-    cbHalf: TCheckBox;
-    cbQuarter: TCheckBox;
-    cbMonth: TCheckBox;
-    cbWeek: TCheckBox;
-    cbDays: TCheckBox;
-    sbRows: TScrollBar;
-    pRows: TPanel;
+    btnDomainCreate: TButton;
+    sbDomains: TScrollBar;
+    pDomains: TPanel;
+    pPeriodsInner: TPanel;
+    sbPeriods: TScrollBar;
+    pPeriods: TPanel;
     function findDomainItemBy(const panel: TPanel): integer;
+    function findPeriodItemBy(const checkbox: TCheckBox): integer;
     procedure addDomainItem(const domain: TDomain);
-    procedure updateColsPositions();
+    procedure addPeriodItem(const period: TPeriod);
+    procedure updateDomainsPositions();
+    procedure updatePeriodsPositions();
     procedure changeColsPos(Sender: TObject; const Step: Integer);
     procedure btnCancelClick(Sender: TObject);
-    procedure btnColCreateClick(Sender: TObject);
+    procedure btnDomainCreateClick(Sender: TObject);
     procedure btnColDeleteClick(Sender: TObject);
     procedure btnColUpClick(Sender: TObject);
     procedure btnColDownClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure sbColsChange(Sender: TObject);
-    procedure sbRowsChange(Sender: TObject);
+    procedure sbDomainsChange(Sender: TObject);
+    procedure sbPeriodsChange(Sender: TObject);
     procedure FormResize(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure btnSaveClick(Sender: TObject);
     procedure edColChange(Sender: TObject);
+    procedure cbPeriodChange(Sender: TObject);
 
   private
     { Private declarations }
     domainItems: TDomainItemList;
     deletedDomains: TDomainList;
+    periodItems: TPeriodItemList;
   public
     { Public declarations }
   end;
@@ -98,6 +100,22 @@ begin
   raise Exception.Create('Can''t find domain item by panel');
 end;
 
+function TfrmSettings.findPeriodItemBy(const checkbox: TCheckBox): integer;
+var
+  i, k: integer;
+begin
+  k := periodItems.Count - 1;
+  for i := 0 to k do
+  begin
+    if periodItems.Items[i].checkbox = checkbox then
+    begin
+      result := i;
+      exit;
+    end;
+  end;
+  raise Exception.Create('Can''t find period item by checkbox');
+end;
+
 procedure TfrmSettings.addDomainItem(const domain: TDomain);
 var
   domainItem: TDomainItem;
@@ -123,7 +141,7 @@ begin
   p := TPanel.Create(self);
   p.Align := TAlignLayout.Horizontal;
   p.Visible := true;
-  p.Parent := pCols;
+  p.Parent := pDomains;
   p.Height := panelHeight;
 
   createButton(btnDeleteName, btnColDeleteClick);
@@ -143,7 +161,27 @@ begin
   domainItems.Add(domainItem);
 end;
 
-procedure TfrmSettings.updateColsPositions();
+procedure TfrmSettings.addPeriodItem(const period: TPeriod);
+var
+  periodItem: TPeriodItem;
+  c: TCheckBox;
+
+begin
+  c := TCheckBox.Create(self);
+  c.Align := TAlignLayout.MostTop;
+  c.Visible := true;
+  c.Parent := pPeriodsInner;
+  c.Height := panelHeight;
+  c.Text := period.name;
+  c.IsChecked := period.active;
+  c.OnChange := cbPeriodChange;
+
+  periodItem.period := period;
+  periodItem.checkbox := c;
+  periodItems.Add(periodItem);
+end;
+
+procedure TfrmSettings.updateDomainsPositions();
 var
   i, colCount: Integer;
   p: TPanel;
@@ -154,14 +192,14 @@ var
 
 begin
   colCount := domainItems.Count;
-  sbCols.Max := panelHeight * colCount - pCols.Height;
+  sbDomains.Max := panelHeight * colCount - pDomains.Height;
 
   dec(colCount);
   for i:= 0 to colCount do
   begin
     domainItem := domainItems.Items[i];
     p := domainItem.panel;
-    p.Position.Y := i * panelHeight - sbCols.Value;
+    p.Position.Y := i * panelHeight - sbDomains.Value;
 
     childCount := p.ChildrenCount - 1;
     for j:= 0 to childCount do
@@ -181,6 +219,38 @@ begin
   end;
 end;
 
+procedure TfrmSettings.updatePeriodsPositions();
+var
+  i, cnt: Integer;
+  c: TCheckBox;
+begin
+  cnt := periodItems.Count;
+  pPeriodsInner.Height := panelHeight * cnt;
+  sbPeriods.Max := pPeriodsInner.Height - pPeriodsInner.Height;
+
+  dec(cnt);
+  for i:= 0 to cnt do
+  begin
+    c := periodItems.Items[i].checkbox;
+    c.Position.Y := i * panelHeight - sbPeriods.Value;
+  end;
+end;
+
+procedure TfrmSettings.cbPeriodChange(Sender: TObject);
+var
+  c: TCheckBox;
+  i: Integer;
+  periodItem: TPeriodItem;
+begin
+  c := Sender as TCheckBox;
+
+  i := findPeriodItemBy(c);
+  periodItem := periodItems.Items[i];
+  periodItem.period.recstate := TRecordState.Updated;
+  periodItem.period.active := c.IsChecked;
+  periodItems.Items[i] := periodItem;
+end;
+
 procedure TfrmSettings.changeColsPos(Sender: TObject; const step: Integer);
 var
   b: TButton;
@@ -197,7 +267,7 @@ begin
   domainItems.Items[i] := domainItem;
 
   domainItems.Move(i, i + step);
-  updateColsPositions();
+  updateDomainsPositions();
 end;
 
 procedure TfrmSettings.edColChange(Sender: TObject);
@@ -228,37 +298,46 @@ begin
   end;
   deletedDomains.Clear;
   domainItems.Clear;
+
+  k := periodItems.Count - 1;
+  for i := 0 to k do
+  begin
+    periodItems.Items[i].checkbox.Destroy;
+  end;
+  periodItems.Clear;
 end;
 
 procedure TfrmSettings.FormCreate(Sender: TObject);
 begin
   domainItems := TDomainItemList.Create;
   deletedDomains := TDomainList.Create;
-  sbCols.SmallChange := panelHeight;
-  sbRows.SmallChange := panelHeight;
+  periodItems := TPeriodItemList.Create;
+  sbDomains.SmallChange := panelHeight;
+  sbPeriods.SmallChange := panelHeight;
 end;
 
 procedure TfrmSettings.FormResize(Sender: TObject);
 var
   isInnerBigger: boolean;
 begin
-  isInnerBigger := pRowsInner.Height > pRows.Height;
-  sbRows.Enabled := isInnerBigger;
-  sbRows.Visible := isInnerBigger;
+  isInnerBigger := pPeriodsInner.Height > pPeriodsInner.Height;
+  sbPeriods.Enabled := isInnerBigger;
+  sbPeriods.Visible := isInnerBigger;
 
   if isInnerBigger then
   begin
-    sbRows.Max := pRowsInner.Height - pRows.Height;
+    sbPeriods.Max := pPeriodsInner.Height - pPeriodsInner.Height;
   end
   else
   begin
-    sbRows.Max := 0;
+    sbPeriods.Max := 0;
   end;
 end;
 
 procedure TfrmSettings.FormShow(Sender: TObject);
 var
   domainList: TDomainList;
+  periodList: TPeriodList;
   i, k: integer;
 begin
   domainList := db.loadDomains;
@@ -267,17 +346,25 @@ begin
   begin
     addDomainItem(domainList.Items[i]);
   end;
-  updateColsPositions();
+  updateDomainsPositions();
+
+  periodList := db.loadPeriods;
+  k := periodList.Count - 1;
+  for i := 0 to k do
+  begin
+    addPeriodItem(periodList.Items[i]);
+  end;
+  updatePeriodsPositions();
 end;
 
-procedure TfrmSettings.sbColsChange(Sender: TObject);
+procedure TfrmSettings.sbDomainsChange(Sender: TObject);
 begin
-  updateColsPositions();
+  updateDomainsPositions();
 end;
 
-procedure TfrmSettings.sbRowsChange(Sender: TObject);
+procedure TfrmSettings.sbPeriodsChange(Sender: TObject);
 begin
-  pRows.Position.Y := -sbRows.Value;
+  pPeriodsInner.Position.Y := -sbPeriods.Value;
 end;
 
 procedure TfrmSettings.btnCancelClick(Sender: TObject);
@@ -285,13 +372,13 @@ begin
   Close;
 end;
 
-procedure TfrmSettings.btnColCreateClick(Sender: TObject);
+procedure TfrmSettings.btnDomainCreateClick(Sender: TObject);
 var
   domain: TDomain;
 begin
   domain := TDomain.Create(TRecordState.New);
   addDomainItem(domain);
-  updateColsPositions();
+  updateDomainsPositions();
 end;
 
 procedure TfrmSettings.btnColDeleteClick(Sender: TObject);
@@ -315,7 +402,7 @@ begin
   domainItems.Delete(i);
   p.Destroy;
 
-  updateColsPositions();
+  updateDomainsPositions();
 end;
 
 procedure TfrmSettings.btnColUpClick(Sender: TObject);
@@ -326,6 +413,7 @@ end;
 procedure TfrmSettings.btnSaveClick(Sender: TObject);
 var
   domains: TDomainList;
+  periods: TPeriodList;
   i, k: integer;
 begin
   domains := TDomainList.Create();
@@ -344,6 +432,16 @@ begin
 
   db.saveDomains(domains);
   domains.Clear;
+
+  periods := TPeriodList.Create();
+  k := periodItems.Count - 1;
+  for i := 0 to k do
+  begin
+    periods.Add(periodItems.Items[i].period);
+  end;
+  db.savePeriods(periods);
+  periods.Clear;
+
   Close;
 end;
 

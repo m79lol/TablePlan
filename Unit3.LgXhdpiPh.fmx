@@ -12,36 +12,41 @@ inherited frmSettings_LgXhdpiPh: TfrmSettings_LgXhdpiPh
       573s
       450s
       573s)
-    inherited tiColumns: TTabItem
+    inherited tiDomains: TTabItem
       Size.Width = 225.000000000000000000
       Size.Height = 49.000000000000000000
       ExplicitSize.cx = 69.000000000000000000
       ExplicitSize.cy = 26.000000000000000000
-      inherited btnColCreate: TButton
+      inherited btnDomainCreate: TButton
         Position.Y = 543.000000000000000000
         Size.Width = 450.000000000000000000
       end
-      inherited pCols: TPanel
+      inherited pDomains: TPanel
         Size.Width = 432.000000000000000000
         Size.Height = 543.000000000000000000
       end
-      inherited sbCols: TScrollBar
+      inherited sbDomains: TScrollBar
         Position.X = 432.000000000000000000
         Size.Height = 543.000000000000000000
       end
     end
-    inherited tiRows: TTabItem
+    inherited tiPeriods: TTabItem
       Size.Width = 225.000000000000000000
       Size.Height = 49.000000000000000000
       ExplicitSize.cx = 69.000000000000000000
       ExplicitSize.cy = 26.000000000000000000
-      inherited sbRows: TScrollBar
+      inherited sbPeriods: TScrollBar
         Position.X = 432.000000000000000000
         Size.Height = 573.000000000000000000
       end
-      inherited pRows: TPanel
+      inherited pPeriods: TPanel
         Size.Width = 432.000000000000000000
         Size.Height = 573.000000000000000000
+        inherited pPeriodsInner: TPanel
+          Anchors = [akLeft]
+          Position.X = 311.000000000000000000
+          Position.Y = 122.000000000000000000
+        end
       end
     end
   end

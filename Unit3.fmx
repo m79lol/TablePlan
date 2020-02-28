@@ -17,7 +17,7 @@ object frmSettings: TfrmSettings
     Size.Width = 746.000000000000000000
     Size.Height = 540.000000000000000000
     Size.PlatformDefault = False
-    TabIndex = 0
+    TabIndex = 1
     TabOrder = 0
     TabPosition = PlatformDefault
     Sizes = (
@@ -25,20 +25,20 @@ object frmSettings: TfrmSettings
       514s
       746s
       514s)
-    object tiColumns: TTabItem
+    object tiDomains: TTabItem
       CustomIcon = <
         item
         end>
-      IsSelected = True
+      IsSelected = False
       Size.Width = 67.000000000000000000
       Size.Height = 26.000000000000000000
       Size.PlatformDefault = False
       StyleLookup = ''
       TabOrder = 0
-      Text = 'Columns'
+      Text = 'Domains'
       ExplicitSize.cx = 69.000000000000000000
       ExplicitSize.cy = 26.000000000000000000
-      object btnColCreate: TButton
+      object btnDomainCreate: TButton
         Align = Bottom
         Position.Y = 484.000000000000000000
         Size.Width = 746.000000000000000000
@@ -46,9 +46,9 @@ object frmSettings: TfrmSettings
         Size.PlatformDefault = False
         TabOrder = 0
         Text = 'Create'
-        OnClick = btnColCreateClick
+        OnClick = btnDomainCreateClick
       end
-      object pCols: TPanel
+      object pDomains: TPanel
         Align = Client
         ClipChildren = True
         Size.Width = 728.000000000000000000
@@ -56,7 +56,7 @@ object frmSettings: TfrmSettings
         Size.PlatformDefault = False
         TabOrder = 1
       end
-      object sbCols: TScrollBar
+      object sbDomains: TScrollBar
         Align = Right
         Max = 0.000000000000000000
         SmallChange = 0.000000000000000000
@@ -66,23 +66,23 @@ object frmSettings: TfrmSettings
         Size.Height = 484.000000000000000000
         Size.PlatformDefault = False
         TabOrder = 2
-        OnChange = sbColsChange
+        OnChange = sbDomainsChange
       end
     end
-    object tiRows: TTabItem
+    object tiPeriods: TTabItem
       CustomIcon = <
         item
         end>
-      IsSelected = False
-      Size.Width = 48.000000000000000000
+      IsSelected = True
+      Size.Width = 59.000000000000000000
       Size.Height = 26.000000000000000000
       Size.PlatformDefault = False
       StyleLookup = ''
       TabOrder = 0
-      Text = 'Rows'
+      Text = 'Periods'
       ExplicitSize.cx = 69.000000000000000000
       ExplicitSize.cy = 26.000000000000000000
-      object sbRows: TScrollBar
+      object sbPeriods: TScrollBar
         Align = Right
         Max = 270.000000000000000000
         SmallChange = 0.000000000000000000
@@ -92,99 +92,19 @@ object frmSettings: TfrmSettings
         Size.Height = 514.000000000000000000
         Size.PlatformDefault = False
         TabOrder = 0
-        OnChange = sbRowsChange
+        OnChange = sbPeriodsChange
       end
-      object pRows: TPanel
+      object pPeriods: TPanel
         Align = Client
         Size.Width = 728.000000000000000000
         Size.Height = 514.000000000000000000
         Size.PlatformDefault = False
         TabOrder = 1
-        object pRowsInner: TPanel
+        object pPeriodsInner: TPanel
           Size.Width = 105.000000000000000000
           Size.Height = 270.000000000000000000
           Size.PlatformDefault = False
           TabOrder = 0
-          object cbAfter: TCheckBox
-            Align = MostTop
-            Size.Width = 105.000000000000000000
-            Size.Height = 30.000000000000000000
-            Size.PlatformDefault = False
-            TabOrder = 8
-            Text = 'After Life'
-          end
-          object cbLife: TCheckBox
-            Align = MostTop
-            Position.Y = 30.000000000000000000
-            Size.Width = 105.000000000000000000
-            Size.Height = 30.000000000000000000
-            Size.PlatformDefault = False
-            TabOrder = 7
-            Text = 'Whole Life'
-          end
-          object cb5Years: TCheckBox
-            Align = MostTop
-            Position.Y = 60.000000000000000000
-            Size.Width = 105.000000000000000000
-            Size.Height = 30.000000000000000000
-            Size.PlatformDefault = False
-            TabOrder = 6
-            Text = '5 years'
-          end
-          object cbYear: TCheckBox
-            Align = MostTop
-            Position.Y = 90.000000000000000000
-            Size.Width = 105.000000000000000000
-            Size.Height = 30.000000000000000000
-            Size.PlatformDefault = False
-            TabOrder = 5
-            Text = 'Year'
-          end
-          object cbHalf: TCheckBox
-            Align = MostTop
-            Position.Y = 120.000000000000000000
-            Size.Width = 105.000000000000000000
-            Size.Height = 30.000000000000000000
-            Size.PlatformDefault = False
-            TabOrder = 4
-            Text = 'Half year'
-          end
-          object cbQuarter: TCheckBox
-            Align = MostTop
-            Position.Y = 150.000000000000000000
-            Size.Width = 105.000000000000000000
-            Size.Height = 30.000000000000000000
-            Size.PlatformDefault = False
-            TabOrder = 3
-            Text = 'Quarter'
-          end
-          object cbMonth: TCheckBox
-            Align = MostTop
-            Position.Y = 180.000000000000000000
-            Size.Width = 105.000000000000000000
-            Size.Height = 30.000000000000000000
-            Size.PlatformDefault = False
-            TabOrder = 2
-            Text = 'Month'
-          end
-          object cbWeek: TCheckBox
-            Align = MostTop
-            Position.Y = 210.000000000000000000
-            Size.Width = 105.000000000000000000
-            Size.Height = 30.000000000000000000
-            Size.PlatformDefault = False
-            TabOrder = 1
-            Text = 'Week'
-          end
-          object cbDays: TCheckBox
-            Align = MostTop
-            Position.Y = 240.000000000000000000
-            Size.Width = 105.000000000000000000
-            Size.Height = 30.000000000000000000
-            Size.PlatformDefault = False
-            TabOrder = 0
-            Text = 'Every day'
-          end
         end
       end
     end
